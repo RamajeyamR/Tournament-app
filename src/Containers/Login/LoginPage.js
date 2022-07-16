@@ -20,7 +20,7 @@ const LoginPage = () => {
       style={{
         flex: 1,
       }}>
-      <StatusBar translucent={true} barStyle="dark-content" />
+      <StatusBar translucent={true} barStyle="dark-content" backgroundColor={'#E8F3DD'}/>
       <View
         style={{
           flex: 1,
@@ -134,6 +134,18 @@ const LoginPage = () => {
               </Text>
             </View>
           </TouchableOpacity>
+        </View>
+        <View style={{
+          marginTop:actuatedNormalize(50),
+          justifyContent:'center',
+          alignItems:'center'
+        }}>
+          <Text style={{
+            fontFamily:Fonts.Medium
+          }}>Or sign In With :</Text>
+          <View>
+            
+          </View>
         </View>
       </View>
     </LinearGradient>
