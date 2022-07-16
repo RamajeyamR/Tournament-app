@@ -1,0 +1,6 @@
+export {default as GoogleIcon} from '../../Assets/Images/Login/google-plus.svg'
+export {default as FacebookIcon} from '../../Assets/Images/Login/facebook.svg'
+export {default as Password_Eye_Icon_Strike} from '../../Assets/Images/Login/eye-password-see-view.svg'
+export {default as Password_Eye_Icon} from '../../Assets/Images/Login/eye-password-show.svg'
+export {default as Arrow_right} from '../../Assets/Images/Login/back-arrow.svg'
+export {default as Arrow_right_Simple} from '../../Assets/Images/Navigation/chevron-left.svg'
