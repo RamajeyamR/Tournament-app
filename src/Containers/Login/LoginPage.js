@@ -16,7 +16,9 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 import { FacebookIcon, GoogleIcon, Password_Eye_Icon, Password_Eye_Icon_Strike } from '../../Constants/SvgLocations';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { updatePassword, updateUsername } from '../../Redux/Reducers/LoginReducer';
+import { updatePassword, updateemail } from '../../Redux/Reducers/LoginReducer';
+import Input from '../../Commons/Input';
+import PassInput from '../../Commons/PassInput';
 
 
 
@@ -24,7 +26,7 @@ const LoginPage = () => {
 
   const navigation = useNavigation()
   const dispatch = useDispatch()
-  const user = useSelector((state)=>state.login.username)
+  const user = useSelector((state)=>state.login.email)
   const pass = useSelector((state)=>state.login.password)
   const [ViewPass, setViewPass] = useState(false)
 
@@ -41,29 +43,21 @@ const LoginPage = () => {
         </View>
 
         <View style={styles.signincontainer}>
-          <View style={styles.usernameinput}>
-            <TextInput
-              placeholder="Email"
-              style={styles.InputText}
-              value={user}
-              onChangeText={(text)=>dispatch(updateUsername(text))}
+          <Input
+              placeholder={'Email'}
+              errorMsg={user.errorMsg}
+              value={user.value}
+              onChangeText={(text)=>dispatch(updateemail(text))}
+              keyboardType={'email-address'}
             />
-          </View>
-          <View style={styles.PasswordInput}>
-            <TextInput
-              placeholder="Password"
-              secureTextEntry={!ViewPass}
-              style={styles.InputText}
-              value={pass}
+            <PassInput
+              placeholder={'Password'}
+              errorMsg={pass.errorMsg}
+              value={pass.value}
               onChangeText={(text)=>dispatch(updatePassword(text))}
+              isPasswordVisible={ViewPass}
+              toogleVisible={()=>setViewPass(!ViewPass)}
             />
-            <TouchableOpacity onPress={()=>setViewPass(!ViewPass)}>
-              {ViewPass ? 
-                <Password_Eye_Icon height={actuatedNormalize(24)} width={actuatedNormalize(24)} /> 
-                : <Password_Eye_Icon_Strike height={actuatedNormalize(24)} width={actuatedNormalize(24)} />}
-              
-            </TouchableOpacity>
-          </View>
 
           <View style={styles.RecoveryPassContainer}>
             <TouchableOpacity onPress={()=>navigation.navigate('ResetPassword')}>
@@ -71,7 +65,7 @@ const LoginPage = () => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.SignInContainer} onPress={()=>navigation.navigate('Dashboard')}>
+          <TouchableOpacity style={styles.SignInContainer} onPress={()=>navigation.navigate('OtpScreen')}>
               <Text style={styles.SignInText}>Sign In</Text>
           </TouchableOpacity>
 
@@ -86,7 +80,7 @@ const LoginPage = () => {
         <View style={styles.SocialLoginContainer}>
           <Text style={{ fontFamily:Fonts.Medium }}>Or sign In With :</Text>
           <View style={styles.SocialLoginIcons}>
-            <TouchableOpacity >
+            <TouchableOpacity>
               <GoogleIcon height={actuatedNormalize(48)} width={actuatedNormalize(48)}/>
             </TouchableOpacity>
             <TouchableOpacity style={{ marginLeft:actuatedNormalize(30) }}>
@@ -121,29 +115,6 @@ const styles = StyleSheet.create({
     width: '80%',
     alignSelf: 'center',
   },
-  usernameinput:{
-    backgroundColor: '#FFFFFF',
-    borderRadius: actuatedNormalize(10),
-    height: actuatedNormalize(65),
-    justifyContent: 'center',
-    paddingLeft: actuatedNormalize(20),
-  },
-  InputText:{
-    fontSize: actuatedNormalize(16),
-    fontFamily: Fonts.Medium,
-    width:'90%'
-  },
-  PasswordInput:{
-    backgroundColor: '#FFFFFF',
-    borderRadius: actuatedNormalize(10),
-    height: actuatedNormalize(65),
-    marginTop: actuatedNormalize(15),
-    justifyContent: 'space-between',
-    alignItems:'center',
-    paddingLeft: actuatedNormalize(20),
-    flexDirection:'row',
-    paddingRight:actuatedNormalize(20)
-  },
   RecoveryPassContainer : {
     marginTop: actuatedNormalize(20),
     alignItems: 'flex-end',
@@ -160,6 +131,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: actuatedNormalize(25),
+    elevation:actuatedNormalize(25),
   },
   SignInText : {
     color: '#FFFFFF',
@@ -181,6 +153,7 @@ const styles = StyleSheet.create({
   },
   SocialLoginIcons : {
     flexDirection:'row',
-    marginTop:actuatedNormalize(30)
+    marginTop:actuatedNormalize(30),
+    // elevation:actuatedNormalize(25),
   }
 });

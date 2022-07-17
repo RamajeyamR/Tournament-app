@@ -1,107 +1,135 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { actuatedNormalize } from '../../Constants/PixelScaling'
-import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Fonts from '../../Constants/Fonts'
-import { Arrow_right, Password_Eye_Icon, Password_Eye_Icon_Strike } from '../../Constants/SvgLocations'
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native'
-import { resetState, updateconfirmPassword, updateEmail, updateMobile, updateName, updatePassword } from '../../Redux/Reducers/RegisterReducer'
+import { onChange, validations } from '../../Redux/Reducers/RegisterReducer'
+import Input from '../../Commons/Input'
+import PassInput from '../../Commons/PassInput'
+import Validate from '../../Commons/Validations/Validate'
 
 const RegisterPage = () => {
 
   const navigation = useNavigation()
   const dispatch = useDispatch()
-  const name = useSelector((state)=>state.register.name)
-  const mobile = useSelector((state)=>state.register.mobile)
-  const email = useSelector((state)=>state.register.email)
-  const pass = useSelector((state)=>state.register.password)
-  const cnfpass = useSelector((state)=>state.register.confirmPassword)
+  const state = useSelector((state)=>state.register)
   const [ViewPass, setViewPass] = useState(false)
   const [ViewCnfPass, setViewCnfPass] = useState(false)
+
+  const HandleChange = (name, value) => {
+    // console.log('Name-->',name)
+    for (let i in state){
+      // console.log('state[i].field-->',state[i].field)
+      if (state[i].field === name){
+        // console.log('state[i].field-->',state[i].field)
+        dispatch(onChange({ name : state[i].field , field : 'value' , value : value }))
+        dispatch(onChange({ name : state[i].field , field : 'touched' , value : true }))
+
+        let ValidationResult = Validate(value, state[i].validationRules)
+        // console.log('ValidationReult -->',ValidationResult)
+        dispatch(onChange({ name : state[i].field , field : 'valid' , value : ValidationResult.valid }))
+
+        if (!ValidationResult.valid) {
+          dispatch(onChange({ name : state[i].field , field : 'errorMsg' , value : ValidationResult.errorMsg }))
+
+        } else {
+          dispatch(onChange({ name : state[i].field, field : 'errorMsg' , value : '' }))
+        }
+      }
+      
+    }
+  }
+
+  const HandleSubmit = () => {
+    for (let i in state){
+      let ValidationResult = Validate(state[i].value, state[i].validationRules)
+      // console.log('ValidationReult -->',ValidationResult)
+       dispatch(validations({ name : i , field : 'valid' , value : ValidationResult.valid }))
+
+      if (!ValidationResult.valid) {
+        dispatch(validations({ name : i , field : 'errorMsg' , value : ValidationResult.errorMsg }))
+
+      } else {
+        dispatch(validations({ name : i , field : 'errorMsg' , value : '' }))
+      }
+    }
+      if((state["confirmPassword"].value) !== (state['password'].value)){
+        console.log('Ullai vanthutan')
+        dispatch(validations({ name : "confirmPassword" , field : 'valid' , value : false }))
+        dispatch(validations({ name : "confirmPassword" , field : 'errorMsg' , value : 'Password & Confirm Password Should be same' }))
+      }
+    let formIsValid = true;
+    for (let i in state) {
+      formIsValid = state[i].valid && formIsValid;
+    }
+    if (formIsValid) {
+      navigation.navigate('Dashboard')
+    }
+  }
 
   return (
     <LinearGradient
       colors={['#E8F3DD', '#BCC5D2', '#C0AEC3']}
       style={{ flex: 1 }}>
-      <View style={{flex:1}}>
-        {/* <View style={styles.headerView}>
-          <TouchableOpacity style={{width:'30%', marginLeft:actuatedNormalize(20), }} onPress={()=> {dispatch(resetState()), navigation.navigate('LoginPage')}}>
-            <Arrow_right width={actuatedNormalize(40)} height={actuatedNormalize(40)} />
-          </TouchableOpacity>
-          <View style={{ width:'50%'}}>
-          <Text style={styles.subheading}>REGISTER</Text>
-          </View>
-        </View> */}
-
+        <ScrollView contentContainerStyle={{paddingBottom:actuatedNormalize(100)}}>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{flex:1}}
+            enabled={true}
+          >
         <View style={styles.signincontainer}>
-          <View style={styles.usernameinput}>
-            <TextInput
-              placeholder="Enter Name"
-              style={styles.InputText}
-              value={name}
-              onChangeText={(text)=>dispatch(updateName(text))}
+            <Input
+              placeholder={'Enter Name'}
+              errorMsg={state.name.errorMsg}
+              value={state.name.value}
+              Touched={state.name.touched}
+              onChangeText={(text)=>HandleChange("name",text)}
             />
-          </View>
-          <View style={styles.usernameinput}>
-            <TextInput
-              placeholder="Mobile"
-              style={styles.InputText}
-              value={mobile}
-              onChangeText={(text)=>dispatch(updateMobile(text))}
+            <Input
+              placeholder={'Mobile'}
+              errorMsg={state.mobile.errorMsg}
+              value={state.mobile.value}
+              Touched={state.mobile.touched}
+              onChangeText={(text)=>HandleChange("mobile",text)}
+              maxLength={10}
               keyboardType={'number-pad'}
             />
-          </View>
-          <View style={styles.usernameinput}>
-            <TextInput
-              placeholder="Email"
-              style={styles.InputText}
-              value={email}
-              onChangeText={(text)=>dispatch(updateEmail(text))}
+            <Input
+              placeholder={'Email'}
+              errorMsg={state.email.errorMsg}
+              value={state.email.value}
+              Touched={state.email.touched}
+              onChangeText={(text)=>HandleChange("email",text)}
               keyboardType={'email-address'}
             />
-          </View>
-          <View style={styles.PasswordInput}>
-            <TextInput
-              placeholder="Password"
-              secureTextEntry={!ViewPass}
-              style={styles.InputText}
-              value={pass}
-              onChangeText={(text)=>dispatch(updatePassword(text))}
-              // keyboardType={'visible-password'}
+            <PassInput
+              placeholder={'Password'}
+              errorMsg={state.password.errorMsg}
+              value={state.password.value}
+              Touched={state.password.touched}
+              onChangeText={(text)=>HandleChange("password",text)}
+              isPasswordVisible={ViewPass}
+              toogleVisible={()=>setViewPass(!ViewPass)}
             />
-            <TouchableOpacity onPress={()=>setViewPass(!ViewPass)}>
-              {ViewPass ? 
-                <Password_Eye_Icon height={actuatedNormalize(24)} width={actuatedNormalize(24)} /> 
-                : <Password_Eye_Icon_Strike height={actuatedNormalize(24)} width={actuatedNormalize(24)} />}
-              
-            </TouchableOpacity>
-          </View>
-          <View style={styles.PasswordInput}>
-            <TextInput
-              placeholder="Confirm Password"
-              secureTextEntry={!ViewCnfPass}
-              style={styles.InputText}
-              value={cnfpass}
-              onChangeText={(text)=>dispatch(updateconfirmPassword(text))}
+            <PassInput
+              placeholder={'Confirm Password'}
+              errorMsg={state.confirmPassword.errorMsg}
+              value={state.confirmPassword.value}
+              Touched={state.confirmPassword.touched}
+              onChangeText={(text)=>HandleChange("confirmPassword",text)}
+              isPasswordVisible={ViewCnfPass}
+              toogleVisible={()=>setViewCnfPass(!ViewCnfPass)}
             />
-            <TouchableOpacity onPress={()=>setViewCnfPass(!ViewCnfPass)}>
-              {ViewCnfPass ? 
-                <Password_Eye_Icon height={actuatedNormalize(24)} width={actuatedNormalize(24)} /> 
-                : <Password_Eye_Icon_Strike height={actuatedNormalize(24)} width={actuatedNormalize(24)} />}
-              
-            </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity style={styles.SignInContainer}>
+  
+          <TouchableOpacity style={styles.SignInButtonContainer} onPress={() => HandleSubmit()}>
               <Text style={styles.SignInText}>Register</Text>
           </TouchableOpacity>
 
         </View>
-
-      </View>
-
+      </KeyboardAvoidingView>
+      </ScrollView>
     </LinearGradient>
   )
 }
@@ -109,55 +137,20 @@ const RegisterPage = () => {
 export default RegisterPage
 
 const styles = StyleSheet.create({
-  headerView :{
-    justifyContent:'flex-start',
-    alignItems: 'center',
-    flexDirection:'row',
-    width:'100%'
-  },
-  subheading : {
-    fontFamily:Fonts.Bold,
-    fontSize:actuatedNormalize(30),
-    color:'#C42014'
-    // marginLeft:actuatedNormalize(70)
-
-  },
   signincontainer : {
     marginTop: actuatedNormalize(50),
     width: '80%',
     alignSelf: 'center',
+    flex:1
   },
-  usernameinput:{
-    backgroundColor: '#FFFFFF',
-    borderRadius: actuatedNormalize(10),
-    height: actuatedNormalize(65),
-    justifyContent: 'center',
-    paddingLeft: actuatedNormalize(20),
-    marginBottom: actuatedNormalize(15),
-  },
-  InputText:{
-    fontSize: actuatedNormalize(16),
-    fontFamily: Fonts.Medium,
-    width:'90%'
-  },
-  PasswordInput:{
-    backgroundColor: '#FFFFFF',
-    borderRadius: actuatedNormalize(10),
-    height: actuatedNormalize(65),
-    justifyContent: 'space-between',
-    alignItems:'center',
-    paddingLeft: actuatedNormalize(20),
-    flexDirection:'row',
-    paddingRight:actuatedNormalize(20),
-    marginBottom: actuatedNormalize(15),
-  },
-  SignInContainer : {
+  SignInButtonContainer : {
     backgroundColor: '#E86568',
     height: actuatedNormalize(65),
     borderRadius: actuatedNormalize(10),
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: actuatedNormalize(25),
+    elevation:actuatedNormalize(25),
   },
   SignInText : {
     color: '#FFFFFF',

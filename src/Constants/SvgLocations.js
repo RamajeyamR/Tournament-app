@@ -4,3 +4,6 @@ export {default as Password_Eye_Icon_Strike} from '../../Assets/Images/Login/eye
 export {default as Password_Eye_Icon} from '../../Assets/Images/Login/eye-password-show.svg'
 export {default as Arrow_right} from '../../Assets/Images/Login/back-arrow.svg'
 export {default as Arrow_right_Simple} from '../../Assets/Images/Navigation/chevron-left.svg'
+export {default as Exclamatory_Info} from '../../Assets/Images/Register/exclamatory.svg'
+export {default as Check_Green} from '../../Assets/Images/Register/success-green-check-mark.svg'
+export {default as Arrow_back_color} from '../../Assets/Images/OTP/Arrow_back_Color.svg'

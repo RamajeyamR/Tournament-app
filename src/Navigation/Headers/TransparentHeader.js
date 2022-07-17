@@ -16,16 +16,17 @@ const TransparentHeader = (props) => {
         paddingBottom: actuatedNormalizeVertical(18),
         paddingHorizontal: actuatedNormalize(27),
         width:'100%',
-        backgroundColor:'#E8F3DD'
+        backgroundColor:'#E8F3DD',
+        alignItems:'center'
     }}>
         <StatusBar translucent={true} barStyle="dark-content" backgroundColor={'#E8F3DD'}/>
-        <View style={{flex:1, justifyContent:'center'}}>
+        <View style={{flex:1, }}>
             <TouchableOpacity onPress={()=>navigation.goBack()}>
                 <Image
                     source={PngLocations.BackArrow}
                     style={{
-                        height:actuatedNormalize(30),
-                        width:actuatedNormalize(30)
+                        height:actuatedNormalize(25),
+                        width:actuatedNormalize(25)
                     }}
                 />
             </TouchableOpacity>
