@@ -3,48 +3,50 @@ import { createSlice } from '@reduxjs/toolkit'
 export const LoginReducer = createSlice({
   name: 'Login',
   initialState: {
-    email:{
-      field : 'email',
+    mobile:{
+      field : 'mobile',
       value: '',
       errorMsg : '',
       valid : false,
       touched : false,
       validationRules : {
         isRequired : true,
+        isNumber : true,
+        minLength: 10,
+        maxLength: 10
       }
     },
-    password : {
-      field : 'password',
+    otp : {
+      field : 'otp',
       value: '',
       errorMsg : '',
       valid : false,
       touched : false,
       validationRules : {
         isRequired : true,
+        isNumber : true,
+        minLength: 6,
+        maxLength: 6
       }
-    },
+    }
   },
   reducers: {
-    updateemail: (state, action) => {
-      state.email = {
-        ...state.email,
-        value : action.payload,
-        touched : true,
-        errorMsg : '',
+    updateLoginMobile: (state, action) => {
+      state.mobile = {
+        ...state.mobile,
+        [action.payload.field] : action.payload.value
       }
     },
-    updatePassword: (state, action) => {
-      state.password = {
-        ...state.password,
-        value : action.payload,
-        touched : true,
-        errorMsg : '',
+    updateOtp : (state, action) => {
+      state.otp = {
+        ...state.otp,
+        [action.payload.field] : action.payload.value
       }
-    },
+    }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { updateemail, updatePassword } = LoginReducer.actions
+export const { updateLoginMobile, updateOtp } = LoginReducer.actions
 
 export default LoginReducer.reducer

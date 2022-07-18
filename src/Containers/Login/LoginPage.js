@@ -8,17 +8,16 @@ import {
   View,
 } from 'react-native';
 import React, { useState } from 'react';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import LinearGradient from 'react-native-linear-gradient';
 import {actuatedNormalize} from '../../Constants/PixelScaling';
 import Fonts from '../../Constants/Fonts';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-import { FacebookIcon, GoogleIcon, Password_Eye_Icon, Password_Eye_Icon_Strike } from '../../Constants/SvgLocations';
+import { FacebookIcon, GoogleIcon} from '../../Constants/SvgLocations';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { updatePassword, updateemail } from '../../Redux/Reducers/LoginReducer';
 import Input from '../../Commons/Input';
-import PassInput from '../../Commons/PassInput';
+import { updateLoginMobile } from '../../Redux/Reducers/LoginReducer';
+import Validate from '../../Commons/Validations/Validate';
 
 
 
@@ -26,9 +25,37 @@ const LoginPage = () => {
 
   const navigation = useNavigation()
   const dispatch = useDispatch()
-  const user = useSelector((state)=>state.login.email)
-  const pass = useSelector((state)=>state.login.password)
-  const [ViewPass, setViewPass] = useState(false)
+  const mobile = useSelector((state)=>state.login.mobile)
+
+  const handleChange = (name , value) => {
+
+    dispatch(updateLoginMobile({ field : 'value' , value : value }))
+    dispatch(updateLoginMobile({ field : 'touched' , value : true }))
+    let ValidationResult = Validate(value, mobile.validationRules)
+    dispatch(updateLoginMobile({ field : 'valid' , value : ValidationResult.valid }))
+
+    if (!ValidationResult.valid) {
+      dispatch(updateLoginMobile({ field : 'errorMsg' , value : ValidationResult.errorMsg }))
+    } else {
+        dispatch(updateLoginMobile({ field : 'errorMsg' , value : '' }))
+      }
+  }
+
+  const handleSubmit = () => {
+
+    let ValidationResult = Validate(mobile.value, mobile.validationRules)
+    dispatch(updateLoginMobile({ field : 'valid' , value : ValidationResult.valid }))
+
+    if (!ValidationResult.valid) {
+      dispatch(updateLoginMobile({ field : 'errorMsg' , value : ValidationResult.errorMsg }))
+    } else {
+        dispatch(updateLoginMobile({ field : 'errorMsg' , value : '' }))
+      }
+    if (mobile.valid && mobile.errorMsg === ''){
+      navigation.navigate('OtpScreen',{number: mobile.value})
+    }
+    
+  }
 
   return (
     <LinearGradient
@@ -44,29 +71,31 @@ const LoginPage = () => {
 
         <View style={styles.signincontainer}>
           <Input
-              placeholder={'Email'}
-              errorMsg={user.errorMsg}
-              value={user.value}
-              onChangeText={(text)=>dispatch(updateemail(text))}
-              keyboardType={'email-address'}
-            />
-            <PassInput
+              placeholder={'Mobile'}
+              errorMsg={mobile.errorMsg}
+              value={mobile.value}
+              Touched={mobile.touched}
+              onChangeText={(text)=>handleChange("mobile",text)}
+              maxLength={10}
+              keyboardType={'number-pad'}
+          />
+            {/* <PassInput
               placeholder={'Password'}
               errorMsg={pass.errorMsg}
               value={pass.value}
               onChangeText={(text)=>dispatch(updatePassword(text))}
               isPasswordVisible={ViewPass}
               toogleVisible={()=>setViewPass(!ViewPass)}
-            />
+            /> */}
 
-          <View style={styles.RecoveryPassContainer}>
+          {/* <View style={styles.RecoveryPassContainer}>
             <TouchableOpacity onPress={()=>navigation.navigate('ResetPassword')}>
               <Text style={styles.RecoveryText}>Recovery Password</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
-          <TouchableOpacity style={styles.SignInContainer} onPress={()=>navigation.navigate('OtpScreen')}>
-              <Text style={styles.SignInText}>Sign In</Text>
+          <TouchableOpacity style={styles.SignInContainer} onPress={()=>handleSubmit()}>
+              <Text style={styles.SignInText}>Continue</Text>
           </TouchableOpacity>
 
           <View style={styles.SignUpContainer}>

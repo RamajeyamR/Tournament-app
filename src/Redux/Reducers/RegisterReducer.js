@@ -40,28 +40,28 @@ export const RegisterReducer = createSlice({
         isEmail : true
       }
     },
-    password : {
-      field : 'password',
-      value: '',
-      errorMsg : '',
-      valid : false,
-      touched : false,
-      validationRules : {
-        isRequired : true,
-        minLength: 8,
-      }
-    },
-    confirmPassword : {
-      field : 'confirmPassword',
-      value: '',
-      errorMsg : '',
-      valid : false,
-      touched : false,
-      validationRules : {
-        isRequired : true,
-        minLength: 8,
-      }
-    }
+    // password : {
+    //   field : 'password',
+    //   value: '',
+    //   errorMsg : '',
+    //   valid : false,
+    //   touched : false,
+    //   validationRules : {
+    //     isRequired : true,
+    //     minLength: 8,
+    //   }
+    // },
+    // confirmPassword : {
+    //   field : 'confirmPassword',
+    //   value: '',
+    //   errorMsg : '',
+    //   valid : false,
+    //   touched : false,
+    //   validationRules : {
+    //     isRequired : true,
+    //     minLength: 8,
+    //   }
+    // }
   },
   
   reducers: {

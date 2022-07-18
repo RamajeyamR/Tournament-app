@@ -55,17 +55,17 @@ const RegisterPage = () => {
         dispatch(validations({ name : i , field : 'errorMsg' , value : '' }))
       }
     }
-      if((state["confirmPassword"].value) !== (state['password'].value)){
-        console.log('Ullai vanthutan')
-        dispatch(validations({ name : "confirmPassword" , field : 'valid' , value : false }))
-        dispatch(validations({ name : "confirmPassword" , field : 'errorMsg' , value : 'Password & Confirm Password Should be same' }))
-      }
+      // if((state["confirmPassword"].value) !== (state['password'].value)){
+      //   console.log('Ullai vanthutan')
+      //   dispatch(validations({ name : "confirmPassword" , field : 'valid' , value : false }))
+      //   dispatch(validations({ name : "confirmPassword" , field : 'errorMsg' , value : 'Password & Confirm Password Should be same' }))
+      // }
     let formIsValid = true;
     for (let i in state) {
       formIsValid = state[i].valid && formIsValid;
     }
     if (formIsValid) {
-      navigation.navigate('Dashboard')
+      navigation.navigate('OtpScreen',{number:state.mobile.value})
     }
   }
 
@@ -104,7 +104,7 @@ const RegisterPage = () => {
               onChangeText={(text)=>HandleChange("email",text)}
               keyboardType={'email-address'}
             />
-            <PassInput
+            {/* <PassInput
               placeholder={'Password'}
               errorMsg={state.password.errorMsg}
               value={state.password.value}
@@ -121,7 +121,7 @@ const RegisterPage = () => {
               onChangeText={(text)=>HandleChange("confirmPassword",text)}
               isPasswordVisible={ViewCnfPass}
               toogleVisible={()=>setViewCnfPass(!ViewCnfPass)}
-            />
+            /> */}
   
           <TouchableOpacity style={styles.SignInButtonContainer} onPress={() => HandleSubmit()}>
               <Text style={styles.SignInText}>Register</Text>
