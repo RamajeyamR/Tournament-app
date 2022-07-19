@@ -1,10 +1,10 @@
-import { Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { actuatedNormalize } from '../../Constants/PixelScaling'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Fonts from '../../Constants/Fonts'
 import Input from '../../Commons/Input'
-import { Arrow_back_color, Arrow_right_Simple } from '../../Constants/SvgLocations'
+import { Arrow_back_color, Arrow_right, Arrow_right_Simple } from '../../Constants/SvgLocations'
 import PngLocations from '../../Constants/PngLocations'
 import { useNavigation } from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux'
@@ -20,6 +20,11 @@ const OtpScreen = (props) => {
     useEffect(() => {
         if(OTP.value.length === 6){
             navigation.navigate('Dashboard')
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Dashboard'}],
+                
+            });
         }
     })
 
@@ -41,34 +46,38 @@ const OtpScreen = (props) => {
         <StatusBar translucent={true} barStyle="dark-content" backgroundColor={'#000066'}/>
         <View style={styles.backgroundView}>
             <TouchableOpacity onPress={()=>navigation.goBack()}>
-                <Arrow_back_color  />
+                <Arrow_back_color fill={'#FFFFFF'} />
+                {/* <Arrow_right fill={'#FFFFFF'}/> */}
             </TouchableOpacity>
         </View>
-        <View style={styles.foregroundView}>
-            <View style={styles.ContentView}>
-                <Text style={styles.Heading}>Enter OTP</Text>
-                <Text style={styles.Subheading}>We have sent an OTP on your number</Text>
-                <Text style={styles.number}>+91 - {number}</Text>
-                <Text style={styles.info}>Enter the OTP you recieved</Text>
+        <KeyboardAvoidingView>
+            <View style={styles.foregroundView}>
+                <View style={styles.ContentView}>
+                    <Text style={styles.Heading}>Enter OTP</Text>
+                    <Text style={styles.Subheading}>We have sent an OTP on your number</Text>
+                    <Text style={styles.number}>+91 - {number}</Text>
+                    <Text style={styles.info}>Enter the OTP you recieved</Text>
 
-                <View style={styles.inputContainer}>
-                    <Input
-                        textContainerStyle={styles.input}
-                        inputTextStyle={styles.inputText}
-                        placeholder={'Enter OTP'}
-                        keyboardType={'number-pad'}
-                        onChangeText={(text)=>HandleChange(text)}
-                        value={OTP.value}
-                        Touched={OTP.touched}
-                        maxLength={6}
-                    />
+                    <View style={styles.inputContainer}>
+                        <Input
+                            textContainerStyle={styles.input}
+                            inputTextStyle={styles.inputText}
+                            placeholder={'Enter OTP'}
+                            keyboardType={'number-pad'}
+                            onChangeText={(text)=>HandleChange(text)}
+                            value={OTP.value}
+                            Touched={OTP.touched}
+                            maxLength={6}
+                            autoFocus={true}
+                        />
+                    </View>
+                    <Text style={styles.HelpText}>Didn't recieve the OTP?</Text>
+                    <TouchableOpacity>
+                        <Text style={styles.ResentOtp}>Resend OTP</Text>
+                    </TouchableOpacity>
                 </View>
-                <Text style={styles.HelpText}>Didn't recieve the OTP?</Text>
-                <TouchableOpacity>
-                    <Text style={styles.ResentOtp}>Resend OTP</Text>
-                </TouchableOpacity>
             </View>
-        </View>
+        </KeyboardAvoidingView>
 
     </View>
   )

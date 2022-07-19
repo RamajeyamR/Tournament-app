@@ -9,6 +9,7 @@ import { onChange, validations } from '../../Redux/Reducers/RegisterReducer'
 import Input from '../../Commons/Input'
 import PassInput from '../../Commons/PassInput'
 import Validate from '../../Commons/Validations/Validate'
+import { createUser } from '../../Redux/Reducers/UserProfileReducer'
 
 const RegisterPage = () => {
 
@@ -65,6 +66,11 @@ const RegisterPage = () => {
       formIsValid = state[i].valid && formIsValid;
     }
     if (formIsValid) {
+      dispatch(createUser({
+        username: state.name.value, 
+        mobile : state.mobile.value,
+        email : state.email.value,
+      }))
       navigation.navigate('OtpScreen',{number:state.mobile.value})
     }
   }

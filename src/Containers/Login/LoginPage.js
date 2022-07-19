@@ -26,6 +26,7 @@ const LoginPage = () => {
   const navigation = useNavigation()
   const dispatch = useDispatch()
   const mobile = useSelector((state)=>state.login.mobile)
+  const users = useSelector((state)=>state.users.user)
 
   const handleChange = (name , value) => {
 
@@ -52,7 +53,12 @@ const LoginPage = () => {
         dispatch(updateLoginMobile({ field : 'errorMsg' , value : '' }))
       }
     if (mobile.valid && mobile.errorMsg === ''){
-      navigation.navigate('OtpScreen',{number: mobile.value})
+
+      const temp = users.filter(user => user.mobile == mobile.value)
+      if (temp.length === 0) {
+        dispatch(updateLoginMobile({ field : 'errorMsg' , value : 'Mobile Did not match the record try Sign up' }))
+      }
+      else navigation.navigate('OtpScreen',{number: mobile.value})
     }
     
   }
@@ -97,6 +103,26 @@ const LoginPage = () => {
           <TouchableOpacity style={styles.SignInContainer} onPress={()=>handleSubmit()}>
               <Text style={styles.SignInText}>Continue</Text>
           </TouchableOpacity>
+
+          <View style={{
+            alignItems:'center',
+            marginTop:actuatedNormalize(20),
+          }}>
+            <Text style={{fontFamily:Fonts.Regular}}>By Registering, I agree to Game Seeker's</Text>
+            <View style={{
+              flexDirection:'row',
+              marginVertical:actuatedNormalize(10),
+              marginHorizontal:actuatedNormalize(5)
+            }}>
+              <TouchableOpacity>
+                <Text style={{fontFamily:Fonts.Bold}}>Terms and Conditions </Text> 
+              </TouchableOpacity>
+              <Text style={{fontFamily:Fonts.Regular}}> and </Text>
+              <TouchableOpacity>
+                <Text style={{fontFamily:Fonts.Bold}}> Privacy Policy</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
 
           <View style={styles.SignUpContainer}>
             <Text style={{ fontFamily:Fonts.Medium }}>Dont't have an account?</Text>

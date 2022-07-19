@@ -15,6 +15,7 @@ const Input = (props) => {
               onChangeText={(text)=>props.onChangeText(text)}
               keyboardType={props.keyboardType}
               maxLength={props.maxLength}
+              autoFocus={props.autoFocus}
             />
             {
               props.errorMsg ? <Exclamatory_Info height={actuatedNormalize(24)} width={actuatedNormalize(24)}/> : null
