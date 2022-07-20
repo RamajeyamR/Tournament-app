@@ -10,9 +10,11 @@ export const UserProfileReducer = createSlice({
             uid : CommonHelper.uniqueIdGenerator(),
             mobile : '1234567890',
             email : 'jeyam@gmail.com',
-            defaultgame : ''
+            defaultgame : '',
+            otp: '123456'
         }
-    ]
+    ],
+    currentUser : []
   },
   reducers: {
     createUser: (state, action) => {
@@ -23,20 +25,28 @@ export const UserProfileReducer = createSlice({
             uid : CommonHelper.uniqueIdGenerator(),
             mobile : action.payload.mobile,
             email : action.payload.email,
-            defaultgame : ''
+            defaultgame : '',
+            otp :'123456'
         }
-     ]
+     ],
+     state.currentUser = [
+        {
+          username : action.payload.username,
+          uid : CommonHelper.uniqueIdGenerator(),
+          mobile : action.payload.mobile,
+          email : action.payload.email,
+          defaultgame : '',
+          otp :'123456'
+        }
+      ]
     },
-    updateOtp : (state, action) => {
-      state.otp = {
-        ...state.otp,
-        [action.payload.field] : action.payload.value
-      }
+    setCurrentUser : (state, action) => {
+      state.currentUser = [...action.payload]
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { createUser, updateOtp } = UserProfileReducer.actions
+export const { createUser, setCurrentUser } = UserProfileReducer.actions
 
 export default UserProfileReducer.reducer

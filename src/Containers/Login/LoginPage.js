@@ -18,6 +18,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Input from '../../Commons/Input';
 import { updateLoginMobile } from '../../Redux/Reducers/LoginReducer';
 import Validate from '../../Commons/Validations/Validate';
+import { setCurrentUser } from '../../Redux/Reducers/UserProfileReducer';
 
 
 
@@ -58,7 +59,11 @@ const LoginPage = () => {
       if (temp.length === 0) {
         dispatch(updateLoginMobile({ field : 'errorMsg' , value : 'Mobile Did not match the record try Sign up' }))
       }
-      else navigation.navigate('OtpScreen',{number: mobile.value})
+      else 
+      {
+        dispatch(setCurrentUser(temp))
+        navigation.navigate('OtpScreen',{number: mobile.value})
+      }
     }
     
   }

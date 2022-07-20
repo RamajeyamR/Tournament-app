@@ -1,5 +1,5 @@
-import { Image, KeyboardAvoidingView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect } from 'react'
+import { Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { actuatedNormalize } from '../../Constants/PixelScaling'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Fonts from '../../Constants/Fonts'
@@ -15,18 +15,42 @@ const OtpScreen = (props) => {
     const navigation = useNavigation()
     const dispatch = useDispatch()
     const OTP = useSelector((state)=>state.login.otp)
+    const user = useSelector((state)=> state.users.currentUser)
     const number = props.route.params.number
+    const [Flag , setFlag] = useState(false)
     // console.log('number==>',number)
     useEffect(() => {
         if(OTP.value.length === 6){
-            navigation.navigate('Dashboard')
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'Dashboard'}],
-                
-            });
+            setFlag(!Flag)
         }
-    })
+    },[OTP.value])
+    useEffect(() => {
+        if(OTP.value.length === 6){
+            // navigation.navigate('Dashboard')
+            const temp = user.filter(user => user.otp == OTP.value)
+            if(temp.length === 0) {
+                console.log('sending update otp')
+                dispatch(updateOtp({ field : 'errorMsg' , value : 'Entered OTP is Wrong' }))
+            }else {
+                const defaultgame = temp.filter(user => user.defaultgame === '')
+                if (defaultgame.length === 0){
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'HomePage'}],
+                        
+                    });
+                }else {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'Dashboard'}],
+                        
+                    });
+                }
+                
+            }
+            
+        }
+    },[Flag])
 
     const HandleChange = (value) => {
         dispatch(updateOtp({ field : 'value' , value : value }))
@@ -35,7 +59,7 @@ const OtpScreen = (props) => {
         dispatch(updateOtp({ field : 'valid' , value : ValidationResult.valid }))
 
         if (!ValidationResult.valid) {
-        dispatch(updateOtp({ field : 'errorMsg' , value : ValidationResult.errorMsg }))
+        // dispatch(updateOtp({ field : 'errorMsg' , value : ValidationResult.errorMsg }))
         } else {
             dispatch(updateOtp({ field : 'errorMsg' , value : '' }))
         }
@@ -50,7 +74,10 @@ const OtpScreen = (props) => {
                 {/* <Arrow_right fill={'#FFFFFF'}/> */}
             </TouchableOpacity>
         </View>
-        <KeyboardAvoidingView>
+        <KeyboardAvoidingView 
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{flex:1}}
+        >
             <View style={styles.foregroundView}>
                 <View style={styles.ContentView}>
                     <Text style={styles.Heading}>Enter OTP</Text>
@@ -68,6 +95,7 @@ const OtpScreen = (props) => {
                             value={OTP.value}
                             Touched={OTP.touched}
                             maxLength={6}
+                            errorMsg={OTP.errorMsg}
                             autoFocus={true}
                         />
                     </View>
@@ -132,7 +160,8 @@ const styles = StyleSheet.create({
     inputContainer : {
         width:'60%',
         marginTop:actuatedNormalize(20),
-        height:actuatedNormalize(50)
+        height:actuatedNormalize(50),
+        marginBottom:actuatedNormalize(20)
     },
     input : {
         borderRadius:actuatedNormalize(50),
@@ -140,9 +169,6 @@ const styles = StyleSheet.create({
         borderWidth:actuatedNormalize(4),
         elevation:0,
         height:actuatedNormalize(50),
-        flexDirection:'column',
-        justifyContent:'center',
-        alignItems:'center',
     },
     inputText : {
         fontSize:actuatedNormalize(18),

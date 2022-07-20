@@ -7,6 +7,7 @@ import Dashboard from '../Containers/Dashboard/Dashboard';
 import ResetPassword from '../Containers/Login/ResetPassword';
 import TransparentHeader from './Headers/TransparentHeader';
 import OtpScreen from '../Containers/OTPScreen/otpScreen';
+import HomePage from '../Containers/Homepage/HomePage';
 
 const Stack = createNativeStackNavigator();
 
@@ -57,6 +58,15 @@ const Navigation = () => {
             headerShown:false
           }}
         />
+
+        <Stack.Screen 
+          name="HomePage" 
+          component={HomePage} 
+          options={{
+            headerShown:false
+          }}
+        />
+
 
       </Stack.Navigator>
     </NavigationContainer>
