@@ -4,10 +4,14 @@ import { actuatedNormalize } from '../../Constants/PixelScaling'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Fonts from '../../Constants/Fonts'
 import PngLocations from '../../Constants/PngLocations'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import CommonHelper from '../../Constants/CommonHelper'
+import { onChangeUserProfile } from '../../Redux/Reducers/UserProfileReducer'
+import { useNavigation } from '@react-navigation/native'
 
 const Dashboard = () => {
+  const dispatch = useDispatch()
+  const navigation = useNavigation()
   const user = useSelector(state => state.users.currentUser)
   let username;
   user.map(user => username = user.username )
@@ -34,6 +38,20 @@ const Dashboard = () => {
       imagesrc : PngLocations.Fornite_Cover
     }
   ]
+
+  const onClick = (name) => {
+
+    let Id ;
+    user.map(user => Id = user.uid)
+    dispatch(onChangeUserProfile({ field:'defaultgame', value: name , uid : Id }))
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'TabNavigator'}],
+      
+    });
+
+  }
+
   return (
     <View style={styles.rootContainer}>
       <View style={styles.HederContainer}>
@@ -48,7 +66,7 @@ const Dashboard = () => {
           renderItem={({item})=> {
             return (
               <View style={styles.Row1}>
-                <TouchableOpacity style={{ alignItems:'center' }}>
+                <TouchableOpacity style={{ alignItems:'center' }} onPress={()=>onClick(item.title)}>
                   <Image
                     source={item.imagesrc}
                     style={styles.ImageStyle}

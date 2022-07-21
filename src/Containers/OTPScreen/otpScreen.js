@@ -36,7 +36,7 @@ const OtpScreen = (props) => {
                 if (defaultgame.length === 0){
                     navigation.reset({
                         index: 0,
-                        routes: [{ name: 'HomePage'}],
+                        routes: [{ name: 'TabNavigator'}],
                         
                     });
                 }else {

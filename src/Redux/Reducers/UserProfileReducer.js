@@ -42,11 +42,35 @@ export const UserProfileReducer = createSlice({
     },
     setCurrentUser : (state, action) => {
       state.currentUser = [...action.payload]
+    },
+    onChangeUserProfile : (state, action) => {
+      // console.log('Actions-->',action)
+      // console.log('state.user --->', state.currentUser)
+      const temp = state.user.map(user => {
+        if (user.uid === action.payload.uid){
+          user = {
+            ...user,
+            [action.payload.field] : action.payload.value
+          }
+          return user
+        }
+        else return user
+      })
+      // console.log('temp --->', temp)
+      state.user = [...temp]
+      // console.log('state.user --->', state.user)
+      state.currentUser = [
+        {
+          ...state.currentUser[0],
+          [action.payload.field] : action.payload.value
+        }
+      ]
+      // console.log('state.user --->', state.currentUser)
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { createUser, setCurrentUser } = UserProfileReducer.actions
+export const { createUser, setCurrentUser, onChangeUserProfile } = UserProfileReducer.actions
 
 export default UserProfileReducer.reducer

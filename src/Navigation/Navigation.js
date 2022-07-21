@@ -8,6 +8,7 @@ import ResetPassword from '../Containers/Login/ResetPassword';
 import TransparentHeader from './Headers/TransparentHeader';
 import OtpScreen from '../Containers/OTPScreen/otpScreen';
 import HomePage from '../Containers/Homepage/HomePage';
+import TabNavigator from './TabNavigation';
 
 const Stack = createNativeStackNavigator();
 
@@ -60,12 +61,20 @@ const Navigation = () => {
         />
 
         <Stack.Screen 
+          name="TabNavigator" 
+          component={TabNavigator} 
+          options={{
+            headerShown:false
+          }}
+        />
+
+        {/* <Stack.Screen 
           name="HomePage" 
           component={HomePage} 
           options={{
             headerShown:false
           }}
-        />
+        /> */}
 
 
       </Stack.Navigator>
