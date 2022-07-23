@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View , TouchableOpacity, FlatList} from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { actuatedNormalize } from '../../Constants/PixelScaling'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Fonts from '../../Constants/Fonts'
@@ -8,10 +8,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import CommonHelper from '../../Constants/CommonHelper'
 import { onChangeUserProfile } from '../../Redux/Reducers/UserProfileReducer'
 import { useNavigation } from '@react-navigation/native'
+import LoadingModal from '../../Components/Modal/LoadingModal'
 
 const Dashboard = () => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
+  const [Loader, setLoader] = useState(false)
   const user = useSelector(state => state.users.currentUser)
   let username;
   user.map(user => username = user.username )
@@ -41,14 +43,18 @@ const Dashboard = () => {
 
   const onClick = (name) => {
 
-    let Id ;
-    user.map(user => Id = user.uid)
-    dispatch(onChangeUserProfile({ field:'defaultgame', value: name , uid : Id }))
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'TabNavigator'}],
-      
-    });
+    setLoader(true)
+    setTimeout(() => {
+      setLoader(false)
+      let Id ;
+      user.map(user => Id = user.uid)
+      dispatch(onChangeUserProfile({ field:'defaultgame', value: name , uid : Id }))
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'TabNavigator'}],
+        
+      });
+    }, 5000)
 
   }
 
@@ -78,6 +84,7 @@ const Dashboard = () => {
           }}
         />
       </View>
+      <LoadingModal visible={Loader} />
     </View>
   )
 }

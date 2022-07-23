@@ -10,14 +10,14 @@ import Input from '../../Commons/Input'
 import PassInput from '../../Commons/PassInput'
 import Validate from '../../Commons/Validations/Validate'
 import { createUser } from '../../Redux/Reducers/UserProfileReducer'
+import LoadingModal from '../../Components/Modal/LoadingModal'
 
 const RegisterPage = () => {
 
   const navigation = useNavigation()
   const dispatch = useDispatch()
   const state = useSelector((state)=>state.register)
-  const [ViewPass, setViewPass] = useState(false)
-  const [ViewCnfPass, setViewCnfPass] = useState(false)
+  const [Loader, setLoader] = useState(false)
 
   const HandleChange = (name, value) => {
     // console.log('Name-->',name)
@@ -44,35 +44,34 @@ const RegisterPage = () => {
   }
 
   const HandleSubmit = () => {
-    for (let i in state){
-      let ValidationResult = Validate(state[i].value, state[i].validationRules)
-      // console.log('ValidationReult -->',ValidationResult)
-       dispatch(validations({ name : i , field : 'valid' , value : ValidationResult.valid }))
+    setLoader(true)
+    setTimeout(() => {
+      setLoader(false)
+      for (let i in state){
+        let ValidationResult = Validate(state[i].value, state[i].validationRules)
+        // console.log('ValidationReult -->',ValidationResult)
+        dispatch(validations({ name : i , field : 'valid' , value : ValidationResult.valid }))
 
-      if (!ValidationResult.valid) {
-        dispatch(validations({ name : i , field : 'errorMsg' , value : ValidationResult.errorMsg }))
+        if (!ValidationResult.valid) {
+          dispatch(validations({ name : i , field : 'errorMsg' , value : ValidationResult.errorMsg }))
 
-      } else {
-        dispatch(validations({ name : i , field : 'errorMsg' , value : '' }))
+        } else {
+          dispatch(validations({ name : i , field : 'errorMsg' , value : '' }))
+        }
       }
-    }
-      // if((state["confirmPassword"].value) !== (state['password'].value)){
-      //   console.log('Ullai vanthutan')
-      //   dispatch(validations({ name : "confirmPassword" , field : 'valid' , value : false }))
-      //   dispatch(validations({ name : "confirmPassword" , field : 'errorMsg' , value : 'Password & Confirm Password Should be same' }))
-      // }
-    let formIsValid = true;
-    for (let i in state) {
-      formIsValid = state[i].valid && formIsValid;
-    }
-    if (formIsValid) {
-      dispatch(createUser({
-        username: state.name.value, 
-        mobile : state.mobile.value,
-        email : state.email.value,
-      }))
-      navigation.navigate('OtpScreen',{number:state.mobile.value})
-    }
+      let formIsValid = true;
+      for (let i in state) {
+        formIsValid = state[i].valid && formIsValid;
+      }
+      if (formIsValid) {
+        dispatch(createUser({
+          username: state.name.value, 
+          mobile : state.mobile.value,
+          email : state.email.value,
+        }))
+        navigation.navigate('OtpScreen',{number:state.mobile.value})
+      }
+    }, 5000)
   }
 
   return (
@@ -110,24 +109,6 @@ const RegisterPage = () => {
               onChangeText={(text)=>HandleChange("email",text)}
               keyboardType={'email-address'}
             />
-            {/* <PassInput
-              placeholder={'Password'}
-              errorMsg={state.password.errorMsg}
-              value={state.password.value}
-              Touched={state.password.touched}
-              onChangeText={(text)=>HandleChange("password",text)}
-              isPasswordVisible={ViewPass}
-              toogleVisible={()=>setViewPass(!ViewPass)}
-            />
-            <PassInput
-              placeholder={'Confirm Password'}
-              errorMsg={state.confirmPassword.errorMsg}
-              value={state.confirmPassword.value}
-              Touched={state.confirmPassword.touched}
-              onChangeText={(text)=>HandleChange("confirmPassword",text)}
-              isPasswordVisible={ViewCnfPass}
-              toogleVisible={()=>setViewCnfPass(!ViewCnfPass)}
-            /> */}
   
           <TouchableOpacity style={styles.SignInButtonContainer} onPress={() => HandleSubmit()}>
               <Text style={styles.SignInText}>Register</Text>
@@ -136,6 +117,7 @@ const RegisterPage = () => {
         </View>
       </KeyboardAvoidingView>
       </ScrollView>
+      <LoadingModal visible={Loader}/>
     </LinearGradient>
   )
 }

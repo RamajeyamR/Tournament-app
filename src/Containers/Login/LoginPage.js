@@ -19,6 +19,7 @@ import Input from '../../Commons/Input';
 import { updateLoginMobile } from '../../Redux/Reducers/LoginReducer';
 import Validate from '../../Commons/Validations/Validate';
 import { setCurrentUser } from '../../Redux/Reducers/UserProfileReducer';
+import LoadingModal from '../../Components/Modal/LoadingModal';
 
 
 
@@ -28,6 +29,7 @@ const LoginPage = () => {
   const dispatch = useDispatch()
   const mobile = useSelector((state)=>state.login.mobile)
   const users = useSelector((state)=>state.users.user)
+  const [Loader, setLoader] = useState(false)
 
   const handleChange = (name , value) => {
 
@@ -44,27 +46,31 @@ const LoginPage = () => {
   }
 
   const handleSubmit = () => {
+    setLoader(true)
+    setTimeout(() => {
+      setLoader(false)
+      let ValidationResult = Validate(mobile.value, mobile.validationRules)
+      dispatch(updateLoginMobile({ field : 'valid' , value : ValidationResult.valid }))
 
-    let ValidationResult = Validate(mobile.value, mobile.validationRules)
-    dispatch(updateLoginMobile({ field : 'valid' , value : ValidationResult.valid }))
+      if (!ValidationResult.valid) {
+        dispatch(updateLoginMobile({ field : 'errorMsg' , value : ValidationResult.errorMsg }))
+      } else {
+          dispatch(updateLoginMobile({ field : 'errorMsg' , value : '' }))
+        }
+      if (mobile.valid && mobile.errorMsg === ''){
 
-    if (!ValidationResult.valid) {
-      dispatch(updateLoginMobile({ field : 'errorMsg' , value : ValidationResult.errorMsg }))
-    } else {
-        dispatch(updateLoginMobile({ field : 'errorMsg' , value : '' }))
+        const temp = users.filter(user => user.mobile == mobile.value)
+        if (temp.length === 0) {
+          dispatch(updateLoginMobile({ field : 'errorMsg' , value : 'Mobile Did not match the record try Sign up' }))
+        }
+        else 
+        {
+          dispatch(setCurrentUser(temp))
+          navigation.navigate('OtpScreen',{number: mobile.value})
+        }
       }
-    if (mobile.valid && mobile.errorMsg === ''){
-
-      const temp = users.filter(user => user.mobile == mobile.value)
-      if (temp.length === 0) {
-        dispatch(updateLoginMobile({ field : 'errorMsg' , value : 'Mobile Did not match the record try Sign up' }))
-      }
-      else 
-      {
-        dispatch(setCurrentUser(temp))
-        navigation.navigate('OtpScreen',{number: mobile.value})
-      }
-    }
+    }, 5000)
+    
     
   }
 
@@ -72,8 +78,10 @@ const LoginPage = () => {
     <LinearGradient
       colors={['#E8F3DD', '#BCC5D2', '#C0AEC3']}
       style={{ flex: 1 }}>
+        
       <StatusBar translucent={true} barStyle="dark-content" backgroundColor={'#E8F3DD'}/>
       <View style={{ flex: 1 }}>
+      
         <View style={styles.headerView}>
           <Text style={styles.heading}>Hello Gamer!</Text>
           <Text style={styles.subheading}>Welcome back you've</Text>
@@ -149,6 +157,9 @@ const LoginPage = () => {
           </View>
         </View>
       </View>
+      <LoadingModal
+        visible={Loader}
+      />
     </LinearGradient>
   );
 };
@@ -215,5 +226,9 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     marginTop:actuatedNormalize(30),
     // elevation:actuatedNormalize(25),
+  },
+  lottie : {
+    width: 100, 
+    height: 100
   }
 });

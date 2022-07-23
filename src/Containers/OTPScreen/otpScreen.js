@@ -10,6 +10,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateOtp } from '../../Redux/Reducers/LoginReducer'
 import Validate from '../../Commons/Validations/Validate'
+import LoadingModal from '../../Components/Modal/LoadingModal'
 
 const OtpScreen = (props) => {
     const navigation = useNavigation()
@@ -18,6 +19,7 @@ const OtpScreen = (props) => {
     const user = useSelector((state)=> state.users.currentUser)
     const number = props.route.params.number
     const [Flag , setFlag] = useState(false)
+    const [Loader, setLoader] = useState(false)
     // console.log('number==>',number)
     useEffect(() => {
         if(OTP.value.length === 6){
@@ -26,29 +28,32 @@ const OtpScreen = (props) => {
     },[OTP.value])
     useEffect(() => {
         if(OTP.value.length === 6){
+            setLoader(true)
+            setTimeout(() => {
+              setLoader(false)
             // navigation.navigate('Dashboard')
-            const temp = user.filter(user => user.otp == OTP.value)
-            if(temp.length === 0) {
-                console.log('sending update otp')
-                dispatch(updateOtp({ field : 'errorMsg' , value : 'Entered OTP is Wrong' }))
-            }else {
-                const defaultgame = temp.filter(user => user.defaultgame === '')
-                if (defaultgame.length === 0){
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'TabNavigator'}],
-                        
-                    });
+                const temp = user.filter(user => user.otp == OTP.value)
+                if(temp.length === 0) {
+                    console.log('sending update otp')
+                    dispatch(updateOtp({ field : 'errorMsg' , value : 'Entered OTP is Wrong' }))
                 }else {
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'Dashboard'}],
-                        
-                    });
+                    const defaultgame = temp.filter(user => user.defaultgame === '')
+                    if (defaultgame.length === 0){
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'TabNavigator'}],
+                            
+                        });
+                    }else {
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'Dashboard'}],
+                            
+                        });
+                    }
+                    
                 }
-                
-            }
-            
+            }, 5000)
         }
     },[Flag])
 
@@ -104,9 +109,11 @@ const OtpScreen = (props) => {
                         <Text style={styles.ResentOtp}>Resend OTP</Text>
                     </TouchableOpacity>
                 </View>
+                
             </View>
+            
         </KeyboardAvoidingView>
-
+        <LoadingModal visible={Loader} />
     </View>
   )
 }
