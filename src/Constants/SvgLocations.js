@@ -18,3 +18,5 @@ export {default as AlarmTab_Icon_Gold} from '../../Assets/Images/Navigation/Alte
 export {default as ResultTab_Icon_Gold} from '../../Assets/Images/Navigation/Alternate color icon/result.svg'
 export {default as UserTab_Icon_Gold} from '../../Assets/Images/Navigation/Alternate color icon/user-icon.svg'
 export {default as ShareTab_Icon_Gold} from '../../Assets/Images/Navigation/Alternate color icon/two-male-user.svg'
+export {default as Wallet_Icon} from '../../Assets/Images/PlayScreen/wallet.svg'
+export {default as Target_Icon} from '../../Assets/Images/PlayScreen/target-aim.svg'

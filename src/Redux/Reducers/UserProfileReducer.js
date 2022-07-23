@@ -11,7 +11,38 @@ export const UserProfileReducer = createSlice({
             mobile : '1234567890',
             email : 'jeyam@gmail.com',
             defaultgame : 'BGMI',
-            otp: '123456'
+            otp: '123456',
+            walletamount : 50,
+            registeredMatch : [
+              {
+                gameType : 'BGMI',
+                matchId : CommonHelper.uniqueIdGenerator(),
+                matchtype : 'Solo',
+                entryFee : 20,
+                map : 'ERANGEL',
+                camerModec : 'TTP',
+                winPrize : 200,
+                prizePerKill : 10,
+                maxPlayer : 100,
+                joinedPlayer : 40,
+                matchDate : '23/07/2022',
+                matchTime : '10:00 AM'
+              },
+              {
+                gameType : 'BGMI',
+                matchId : CommonHelper.uniqueIdGenerator(),
+                matchtype : 'Solo',
+                entryFee : 10,
+                map : 'ALL WEAPONS',
+                camerModec : 'TTP',
+                winPrize : 100,
+                prizePerKill : 5,
+                maxPlayer : 100,
+                joinedPlayer : 59,
+                matchDate : '23/07/2022',
+                matchTime : '12:01 PM'
+              },
+            ]
         }
     ],
     currentUser : []
@@ -26,7 +57,9 @@ export const UserProfileReducer = createSlice({
             mobile : action.payload.mobile,
             email : action.payload.email,
             defaultgame : '',
-            otp :'123456'
+            otp :'123456',
+            walletamount : 0,
+            registeredMatch : []
         }
      ],
      state.currentUser = [
@@ -36,7 +69,9 @@ export const UserProfileReducer = createSlice({
           mobile : action.payload.mobile,
           email : action.payload.email,
           defaultgame : '',
-          otp :'123456'
+          otp :'123456',
+          walletamount : 0,
+          registeredMatch : []
         }
       ]
     },

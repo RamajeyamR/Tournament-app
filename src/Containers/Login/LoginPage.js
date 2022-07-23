@@ -1,9 +1,7 @@
 import {
-  Pressable,
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -98,20 +96,6 @@ const LoginPage = () => {
               maxLength={10}
               keyboardType={'number-pad'}
           />
-            {/* <PassInput
-              placeholder={'Password'}
-              errorMsg={pass.errorMsg}
-              value={pass.value}
-              onChangeText={(text)=>dispatch(updatePassword(text))}
-              isPasswordVisible={ViewPass}
-              toogleVisible={()=>setViewPass(!ViewPass)}
-            /> */}
-
-          {/* <View style={styles.RecoveryPassContainer}>
-            <TouchableOpacity onPress={()=>navigation.navigate('ResetPassword')}>
-              <Text style={styles.RecoveryText}>Recovery Password</Text>
-            </TouchableOpacity>
-          </View> */}
 
           <TouchableOpacity style={styles.SignInContainer} onPress={()=>handleSubmit()}>
               <Text style={styles.SignInText}>Continue</Text>
