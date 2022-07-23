@@ -10,7 +10,7 @@ export const UserProfileReducer = createSlice({
             uid : CommonHelper.uniqueIdGenerator(),
             mobile : '1234567890',
             email : 'jeyam@gmail.com',
-            defaultgame : '',
+            defaultgame : 'BGMI',
             otp: '123456'
         }
     ],
